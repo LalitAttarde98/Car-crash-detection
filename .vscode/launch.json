@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debugger",
+            "type": "python",
+            "request": "launch",
+            "program": "src/main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "inference",
+                //"--use-vlm"
+            ]
+        }
+    ]
+}
