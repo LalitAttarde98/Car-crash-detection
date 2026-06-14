@@ -2,8 +2,7 @@
 
 This is an experimental project developed when I participated in the CVPR AUTOPILOT 2026 competition. It primarily utilizes classical computer vision techniques and kinematic constraints applied to tracked vehicles to detect and classify accidents. The dataset contains CCTV footage of vehicle accidents and simulated accidents with CARLA.
 
-<video src="doc/combined_success.mp4" controls="controls" style="max-width: 100%;">
-  Your browser does not support the video tag.
+<video src="https://github.com/LalitAttarde98/CrashCar/main/doc/combined_success.mp4" controls autoplay loop muted width="100%">
 </video>
 
 ## Detection Pipeline
@@ -196,8 +195,7 @@ You can run any of the following pipelines and modify hyperparameters in `config
 
 ### Failure Cases
 
-<video src="doc/combined_failure.mp4" controls="controls" style="max-width: 100%;">
-  Your browser does not support the video tag.
+<video src="https://github.com/LalitAttarde98/CrashCar/main/doc/combined_failure.mp4" controls autoplay loop muted width="100%">
 </video>
 
 * Optimal thresholds and kinematic constraints change depending on camera mounting, depth, and perspective.
