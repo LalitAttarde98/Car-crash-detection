@@ -2,8 +2,7 @@
 
 This is an experimental project developed when I participated in the CVPR AUTOPILOT 2026 competition. It primarily utilizes classical computer vision techniques and kinematic constraints applied to tracked vehicles to detect and classify accidents. The dataset contains CCTV footage of vehicle accidents and simulated accidents with CARLA.
 
-<video src="https://github.com/LalitAttarde98/CrashCar/main/doc/combined_success.mp4" controls autoplay loop muted width="100%">
-</video>
+<img src="doc/combined_success.gif" width="100%" alt="MOT">
 
 ## Detection Pipeline
 
@@ -43,74 +42,53 @@ The physics anomaly detector evaluates four types of anomalies based on tracked 
 
 1. **Acceleration Anomaly**
    Acceleration is approximated as $a = \frac{\Delta S}{\Delta t}$ where speed is $S = |\mathbf{v}_{norm}|$. The tracked velocity is normalized by the object's size:
-
-   $\mathbf{v}_{norm} = \frac{(v_x, v_y)}{\sqrt{w^2 + h^2}}$.
+   
+   $\mathbf{v}_{norm} = \frac{(v_x, v_y)}{\sqrt{w^2 + h^2}}$
+   
    This normalization makes the acceleration approximately depth-invariant. Sudden decelerations are flagged as anomalies.
 
-2. **Trajectory Anomaly**
+3. **Trajectory Anomaly**
    This constraint detects potential collisions between pairs of tracks by predicting their future positions and analyzing their relative motion.
 
    An anomaly is flagged when vehicles are approaching each other such that $v_{close} > \text{threshold}$. Additionally, if time of closest approach is less than 1.5 times the FPS and motion is strongly aligned, anomaly is flagged:
 
-   $$
-   \frac{\mathbf{v}_{rel}}{|\mathbf{v}_{rel}|}
-   \cdot
-   \frac{\mathbf{d}}{|\mathbf{d}|} > 0.90
-   $$
+   $\frac{\mathbf{v}{\text{rel}}}{|\mathbf{v}_{\text{rel}}|} \cdot \frac{\mathbf{d}}{|\mathbf{d}|} > 0.90$
 
    where
 
    Closing speed:
 
-   $$
-   v_{close} = \frac{\mathbf{v}_{rel} \cdot \mathbf{d}}{|\mathbf{d}|}
-   $$
+   $v_{close} = \frac{\mathbf{v}_{rel} \cdot \mathbf{d}}{|\mathbf{d}|}$
 
    Expected time for bbox to overlap at closest approach:
 
-   $$
-   t_{closest} = \frac{\mathbf{d} \cdot \mathbf{v}_{rel}}{|\mathbf{v}_{rel}|^2}
-   $$
+   $t_{\text{closest}} = \frac{\mathbf{d} \cdot \mathbf{v}{\text{rel}}}{|\mathbf{v}_{\text{rel}}|^2}$
 
    Relative velocity:
 
-   $$
-   \mathbf{v}_{rel} = \mathbf{v}_1 - \mathbf{v}_2
-   $$
+   $\mathbf{v}_{rel} = \mathbf{v}_1 - \mathbf{v}_2$
 
    Distance vector:
 
-   $$
-   \mathbf{d} = \mathbf{p}_2 - \mathbf{p}_1
-   $$
+   $\mathbf{d} = \mathbf{p}_2 - \mathbf{p}_1$
 
-4. **Angle Anomaly**
+5. **Angle Anomaly**
 
-      This metric checks sudden directional changes that may indicate a collision or abrupt swerve.
+    This metric checks sudden directional changes that may indicate a collision or abrupt swerve.
     
-      Movement vectors are computed over consecutive time steps:
+    Movement vectors are computed over consecutive time steps:
     
-    $$
-    \mathbf{v}_{prev} = \mathbf{p}_2 - \mathbf{p}_1
-    $$
+    $\mathbf{v}_{prev} = \mathbf{p}_2 - \mathbf{p}_1$
     
-    $$
-    \mathbf{v}_{curr} = \mathbf{p}_3 - \mathbf{p}_2
-    $$
+    $\mathbf{v}_{curr} = \mathbf{p}_3 - \mathbf{p}_2$
     
-      The angle between these vectors is then calculated as
+   The angle between these vectors is then calculated as
     
-    $$
-    \theta =
-    \arccos!\left(
-    \frac{\mathbf{v}*{prev} \cdot \mathbf{v}*{curr}}
-    {|\mathbf{v}*{prev}| , |\mathbf{v}*{curr}|}
-    \right).
-    $$
-    
-      If $\theta > \theta_{threshold}$, an anomaly is flagged.
+   $\theta = \arccos\left( \frac{\mathbf{v}{\text{prev}} \cdot \mathbf{v}{\text{curr}}}{|\mathbf{v}{\text{prev}}| \cdot |\mathbf{v}_{\text{curr}}|} \right)$
 
-5. **Flow Anomaly**
+  If $\theta > \theta_{threshold}$, an anomaly is flagged.
+
+6. **Flow Anomaly**
 
    Detects sudden spikes in optical flow energy within the object's bounding box, which corresponds to sudden pixel movements caused by collisions. It computes a baseline mean ($\mu$) and standard deviation ($\sigma$) from the historical flow energy of the track. For the current flow energy $E_{curr}$, the Z-score is calculated as $Z = \frac{E_{curr} - \mu}{\sigma}$. If $Z > Z_{threshold}$, it flags a flow anomaly.
 
@@ -195,8 +173,7 @@ You can run any of the following pipelines and modify hyperparameters in `config
 
 ### Failure Cases
 
-<video src="https://github.com/LalitAttarde98/CrashCar/main/doc/combined_failure.mp4" controls autoplay loop muted width="100%">
-</video>
+<img src="doc/combined_failure.gif" width="100%" alt="MOT">
 
 * Optimal thresholds and kinematic constraints change depending on camera mounting, depth, and perspective.
 * These kinematic rules often fail in heavy traffic and chaotic scenarios.
