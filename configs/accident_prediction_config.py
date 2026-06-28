@@ -1,6 +1,6 @@
 import numpy as np
 data_cfg = {
-    'train_dir': '/sim_dataset/', # To be replaced by a user-defined path
+    'train_dir': '/sim_dataset/', 
     'test_list': '/test_metadata.csv',
     'test_dir': '/',
     'train_dtype': [
